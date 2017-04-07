@@ -55,14 +55,14 @@ class ServiceMethod(object):
     """
     def __init__(self, **kwargs):
         if verbose:
-            print "ServiceMethod.__init__"
-            print kwargs
+            print("ServiceMethod.__init__")
+            print(kwargs)
         self.decorator_kwargs = kwargs
     
     def __call__(self, f):
         if verbose:
-            print "ServiceMethod.__call__"
-            print f.__name__
+            print("ServiceMethod.__call__")
+            print(f.__name__)
         
         @wraps(f)
         def wrapped_f(ServiceObj,**kwargs):
@@ -92,8 +92,8 @@ class ServiceMethod(object):
             params['token'] = ServiceObj.token
             
             if verbose:
-                print URL
-                print params
+                print(URL)
+                print(params)
             if returnFormat == 'url':
                 # Simply return the URL that would be called
                 return URL + '?' + urllib.urlencode(params)
@@ -101,16 +101,16 @@ class ServiceMethod(object):
             r=requests.get(URL, params=params)
             if not r.ok:
                 try:
-                    print '%d: %s' % (r.status_code, status_msgs[r.status_code])
+                    print('%d: %s' % (r.status_code, status_msgs[r.status_code]))
                 except:
-                    print '%d is not an expected status code...' % r.status_code
+                    print('%d is not an expected status code...' % r.status_code)
             if verbose:
-                print r
-                print "%s.%s wrapped" % (ServiceObj.__class__, f.__name__)
-                print self.decorator_kwargs
-                print r.url
-                print ServiceObj.baseURL,ServiceObj.servicename, f.__name__,kwargs
-                print kwargs
+                print(r)
+                print("%s.%s wrapped" % (ServiceObj.__class__, f.__name__))
+                print(self.decorator_kwargs)
+                print(r.url)
+                print(ServiceObj.baseURL,ServiceObj.servicename, f.__name__,kwargs)
+                print(kwargs)
             
             if returnFormat == 'json':
                 #if (f.__name__=='getFile' and ServiceObj.servicename == 'archivefiles'):
@@ -131,7 +131,7 @@ class _ExposedResource(object):
     """Abstract base object with common properties inheritet by webservice resources"""
     def __init__(self,baseURL=baseURL,token=None,returnFormat=None):
         if verbose:
-            print "Abstract init!!!"
+            print("Abstract init!!!")
         if returnFormat:
             self.returnFormat=returnFormat.lower()
         else:
@@ -146,7 +146,7 @@ class _ExposedResource(object):
     def getToken(self):
         """If the user access token is unkown help user to find it"""
         #webbrowser('https://dmas.uvic.ca/Profile')
-        #print "Enter token:"
+        #print("Enter token:")
         self.token=token
         
 
@@ -243,19 +243,19 @@ class Stations(_ExposedResource):
         nodeTree=self.getTree(showHidden=showHidden,returnFormat='json')
         for observatoryRoot in nodeTree:
             self._printNode(observatoryRoot)
-            print " "
+            print(" ")
                         
     def _printNode(self,node,path=''):
-        #print "Node: ", node
+        #print("Node: ", node)
         for key in ['name', 'stationCode', 'description', 'deviceCategories', 'els']:
             if not node.has_key(key):
-                #print 'missing key: %s !!!!' % key
+                #print('missing key: %s !!!!' % key)
                 node[key]=None
         path += '%s/' % node['name']
         #deviceCategories=node['deviceCategories'].sort()
-        #print '%s\t%s\t%s\t%s' % (path, node['name'], node['stationCode'],', '.join(node['deviceCategories']))
+        #print('%s\t%s\t%s\t%s' % (path, node['name'], node['stationCode'],', '.join(node['deviceCategories'])))
         #if 'JB' in node['deviceCategories']:
-        print path,', '.join(node['deviceCategories'])
+        print(path,', '.join(node['deviceCategories']))
         childNodes=node['els'] #.sort(key='desciption')
         for childNode in childNodes: 
             self._printNode(childNode,path=path)
